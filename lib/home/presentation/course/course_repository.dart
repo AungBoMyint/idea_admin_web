@@ -141,7 +141,7 @@ class CourseRepositoryApi {
     final key = box.get(jwtKey, defaultValue: "") as String;
 
     try {
-      final response = await _dio.post(
+      final response = await _dio.patch(
         path,
         data: FormData.fromMap(data),
         options: Options(headers: {
@@ -156,6 +156,30 @@ class CourseRepositoryApi {
       }
     } catch (e) {
       completer.complete(null);
+    }
+    return completer.future;
+  }
+
+  Future<CourseListResponse> searchCourse(
+      {required String path, required String data}) async {
+    Completer<CourseListResponse> completer = Completer();
+    try {
+      final response = await _dio.get(path, queryParameters: {
+        "search": data,
+      });
+      if (response.statusCode == 200) {
+        completer.complete(CourseListResponse.fromJson(response.data));
+      } else {
+        completer.complete(
+            CourseListResponse(error: ResponseError.fromJson(response.data)));
+      }
+    } catch (e) {
+      log("Error: $e");
+      completer.complete(
+        CourseListResponse(
+          error: ResponseError(detail: "$e"),
+        ),
+      );
     }
     return completer.future;
   }

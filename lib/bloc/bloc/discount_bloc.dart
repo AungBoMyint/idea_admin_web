@@ -17,6 +17,7 @@ import 'package:mmlearning_admin/model/form_image.dart';
 import 'package:mmlearning_admin/model/title.dart';
 
 import '../../enum_class.dart';
+import '../../model/discount_list_response.dart';
 
 part 'discount_event.dart';
 part 'discount_state.dart';
@@ -34,6 +35,7 @@ class DiscountBloc extends Bloc<DiscountEvent, DiscountState> {
     on<DeleteDiscount>(_onDeleteDiscount);
     on<GetStartDiscount>(_onGetStartDiscount);
     on<GetMoreDiscount>(_onGetMoreDiscount);
+    on<SearchDiscount>(_onSearchDiscount);
   }
 
   FutureOr<void> _onChangeSelectedDiscount(
@@ -204,19 +206,30 @@ class DiscountBloc extends Bloc<DiscountEvent, DiscountState> {
       UpdateDiscount event, Emitter<DiscountState> emit) async {
     if (state.discountStatus != DiscountStatus.adding && state.isValid) {
       emit(state.copyWith(discountStatus: DiscountStatus.updating));
-      final response = await comRepo.updateFormData(
-        data: {
-          "title": state.formTitle.value,
-          "image": MultipartFile.fromBytes(
-              Uint8List.fromList(state.formImage.value),
-              filename: "${DateTime.now().microsecondsSinceEpoch}.png"),
-          "discount_percentage": state.formPercentage.value,
-        },
-        uploading: (v) {
-          //Do Nothing
-        },
-        path: "$discountPath${state.selectedDiscount!.id}/",
-      );
+      Map<String, dynamic>? response;
+      if (state.formImage.value.length == 1) {
+        response = await comRepo.updateData(
+          data: {
+            "title": state.formTitle.value,
+            "discount_percentage": state.formPercentage.value,
+          },
+          path: "$discountPath${state.selectedDiscount!.id}/",
+        );
+      } else {
+        response = await comRepo.updateFormData(
+          data: {
+            "title": state.formTitle.value,
+            "image": MultipartFile.fromBytes(
+                Uint8List.fromList(state.formImage.value),
+                filename: "${DateTime.now().microsecondsSinceEpoch}.png"),
+            "discount_percentage": state.formPercentage.value,
+          },
+          uploading: (v) {
+            //Do Nothing
+          },
+          path: "$discountPath${state.selectedDiscount!.id}/",
+        );
+      }
       if (!(response == null)) {
         //if success
         if (state.formDiscountItems.value.isNotEmpty) {
@@ -268,6 +281,31 @@ class DiscountBloc extends Bloc<DiscountEvent, DiscountState> {
           discounts: discounts));
     } else {
       emit(state.copyWith(discountStatus: DiscountStatus.deletingFail));
+    }
+  }
+
+  FutureOr<void> _onSearchDiscount(
+      SearchDiscount event, Emitter<DiscountState> emit) async {
+    if (state.discountStatus != DiscountStatus.searching) {
+      //search
+      final response =
+          await comRepo.search(path: discountPath, data: event.value);
+      if (!(response == null)) {
+        final discountResponse = DiscountListResponse.fromJson(response);
+        //success
+        emit(state.copyWith(
+          discountStatus: DiscountStatus.searchingSuccess,
+          hasMore: discountResponse.next == null ? false : true,
+          next: discountResponse.next,
+          discounts: discountResponse.results,
+        ));
+      } else {
+        //fail
+        emit(state.copyWith(
+          discountStatus: DiscountStatus.searchingFail,
+          error: "search discount error!",
+        ));
+      }
     }
   }
 }

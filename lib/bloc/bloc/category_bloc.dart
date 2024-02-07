@@ -127,11 +127,13 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
         ),
       );
     } else {
+      emit(state.copyWith(categoryStatus: CategoryStatus.loading));
       final response = await http.get(Uri.parse(event.category!.image));
       final formImage = FormImage.dirty(value: response.bodyBytes);
       final formTitle = FormTitle.dirty(value: event.category!.title);
       emit(
         state.copyWith(
+            categoryStatus: CategoryStatus.initial,
             selectedCategory: event.category,
             clearSelectedCategory: false,
             formImage: formImage,

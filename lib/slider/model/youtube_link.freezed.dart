@@ -20,6 +20,7 @@ YoutubeLink _$YoutubeLinkFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$YoutubeLink {
+  int get id => throw _privateConstructorUsedError;
   String get link => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -34,7 +35,7 @@ abstract class $YoutubeLinkCopyWith<$Res> {
           YoutubeLink value, $Res Function(YoutubeLink) then) =
       _$YoutubeLinkCopyWithImpl<$Res, YoutubeLink>;
   @useResult
-  $Res call({String link});
+  $Res call({int id, String link});
 }
 
 /// @nodoc
@@ -50,9 +51,14 @@ class _$YoutubeLinkCopyWithImpl<$Res, $Val extends YoutubeLink>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? link = null,
   }) {
     return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
       link: null == link
           ? _value.link
           : link // ignore: cast_nullable_to_non_nullable
@@ -69,7 +75,7 @@ abstract class _$$_YoutubeLinkCopyWith<$Res>
       __$$_YoutubeLinkCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String link});
+  $Res call({int id, String link});
 }
 
 /// @nodoc
@@ -83,9 +89,14 @@ class __$$_YoutubeLinkCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? link = null,
   }) {
     return _then(_$_YoutubeLink(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
       link: null == link
           ? _value.link
           : link // ignore: cast_nullable_to_non_nullable
@@ -97,17 +108,19 @@ class __$$_YoutubeLinkCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$_YoutubeLink implements _YoutubeLink {
-  _$_YoutubeLink({required this.link});
+  _$_YoutubeLink({required this.id, required this.link});
 
   factory _$_YoutubeLink.fromJson(Map<String, dynamic> json) =>
       _$$_YoutubeLinkFromJson(json);
 
   @override
+  final int id;
+  @override
   final String link;
 
   @override
   String toString() {
-    return 'YoutubeLink(link: $link)';
+    return 'YoutubeLink(id: $id, link: $link)';
   }
 
   @override
@@ -115,12 +128,13 @@ class _$_YoutubeLink implements _YoutubeLink {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_YoutubeLink &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.link, link) || other.link == link));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, link);
+  int get hashCode => Object.hash(runtimeType, id, link);
 
   @JsonKey(ignore: true)
   @override
@@ -137,11 +151,14 @@ class _$_YoutubeLink implements _YoutubeLink {
 }
 
 abstract class _YoutubeLink implements YoutubeLink {
-  factory _YoutubeLink({required final String link}) = _$_YoutubeLink;
+  factory _YoutubeLink({required final int id, required final String link}) =
+      _$_YoutubeLink;
 
   factory _YoutubeLink.fromJson(Map<String, dynamic> json) =
       _$_YoutubeLink.fromJson;
 
+  @override
+  int get id;
   @override
   String get link;
   @override

@@ -19,6 +19,11 @@ class ChangeSelectedCourse extends CourseEvent {
   ChangeSelectedCourse({required this.course});
 }
 
+class SearchCourse extends CourseEvent {
+  final String value;
+  SearchCourse({required this.value});
+}
+
 class UpdateSection extends CourseEvent {}
 
 class UpdateLesson extends CourseEvent {}

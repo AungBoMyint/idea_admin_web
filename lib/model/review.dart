@@ -10,10 +10,11 @@ part 'review.g.dart';
 class Review with _$Review {
   @JsonSerializable(explicitToJson: true)
   factory Review({
+    required int id,
     required String review,
-    required Student? student,
-    Course? course,
-    required double rating,
+    dynamic student,
+    dynamic course,
+    double? rating,
     required DateTime date,
   }) = _Review;
   factory Review.fromJson(Map<String, dynamic> json) => _$ReviewFromJson(json);

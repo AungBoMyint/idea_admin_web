@@ -6,6 +6,7 @@ part 'facebook_link.g.dart';
 @freezed
 class FacebookLink with _$FacebookLink {
   factory FacebookLink({
+    required int id,
     required String link,
   }) = _FacebookLink;
   factory FacebookLink.fromJson(Map<String, dynamic> json) =>

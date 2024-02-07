@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mmlearning_admin/bloc/bloc/rating_bloc.dart';
+import 'package:mmlearning_admin/bloc/core_bloc.dart';
 import 'package:mmlearning_admin/constant.dart';
 import 'package:mmlearning_admin/main.dart';
 import 'package:mmlearning_admin/model/category.dart';
@@ -10,14 +13,13 @@ class RatingDataSource extends DataGridSource {
   RatingDataSource({required List<Rating> courses}) {
     _courses = courses
         .map<DataGridRow>((e) => DataGridRow(cells: [
-              DataGridCell<String>(columnName: 'actions', value: ""),
+              DataGridCell<Rating>(columnName: 'actions', value: e),
               DataGridCell<double>(columnName: 'rating', value: e.rating),
+              DataGridCell<String>(columnName: 'course', value: e.course),
               DataGridCell<String>(
-                  columnName: 'course', value: e.course?.title),
-              DataGridCell<String>(
-                  columnName: 'student',
-                  value:
-                      "${e.student?.user.firstName} ${e.student?.user.lastName}"),
+                columnName: 'student',
+                value: e.student,
+              ),
             ]))
         .toList();
   }
@@ -36,14 +38,27 @@ class RatingDataSource extends DataGridSource {
         return Row(
           children: [
             IconButton(
-                onPressed: () {},
-                icon: Icon(
+                onPressed: () {
+                  materialKey.currentContext!
+                      .read<CoreBloc>()
+                      .add(ChangeDetailPageEvent(
+                        detailPage: DetailPage.ratingAdd,
+                      ));
+                  materialKey.currentContext!
+                      .read<RatingBloc>()
+                      .add(ChangeSelectedRating(rating: dataGridCell.value));
+                },
+                icon: const Icon(
                   Icons.edit_document,
                   color: Colors.orange,
                 )),
             IconButton(
-                onPressed: () {},
-                icon: Icon(
+                onPressed: () {
+                  materialKey.currentContext!
+                      .read<RatingBloc>()
+                      .add(DeleteRating(id: dataGridCell.value.id));
+                },
+                icon: const Icon(
                   Icons.delete,
                   color: Colors.red,
                 )),
@@ -63,5 +78,16 @@ class RatingDataSource extends DataGridSource {
         ),
       );
     }).toList());
+  }
+
+  @override
+  Future<void> handleLoadMoreRows() async {
+    final ratingBloc = materialKey.currentContext!.read<RatingBloc>();
+    if (ratingBloc.state.hasMore) {
+      await Future.delayed(const Duration(seconds: 5));
+      // ignore: use_build_context_synchronously
+      ratingBloc.add(GetMoreRating());
+      notifyListeners();
+    }
   }
 }

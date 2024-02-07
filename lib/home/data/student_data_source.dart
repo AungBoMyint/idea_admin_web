@@ -53,8 +53,19 @@ class StudentDataSource extends DataGridSource {
         return Padding(
           padding: const EdgeInsets.all(8.0),
           child: CircleAvatar(
-            radius: 30,
-            child: Image.network(dataGridCell.value ?? emptyUser),
+            radius: 50,
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: theme.cardColor,
+                image: DecorationImage(
+                  image: NetworkImage(
+                    dataGridCell.value ?? emptyUser,
+                  ),
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
           ),
         );
       }
@@ -70,5 +81,16 @@ class StudentDataSource extends DataGridSource {
         ),
       );
     }).toList());
+  }
+
+  @override
+  Future<void> handleLoadMoreRows() async {
+    final ratingBloc = materialKey.currentContext!.read<StudentBloc>();
+    if (ratingBloc.state.hasMore) {
+      await Future.delayed(const Duration(seconds: 5));
+      // ignore: use_build_context_synchronously
+      ratingBloc.add(GetMoreStudent());
+      notifyListeners();
+    }
   }
 }

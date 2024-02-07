@@ -20,6 +20,7 @@ FacebookLink _$FacebookLinkFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$FacebookLink {
+  int get id => throw _privateConstructorUsedError;
   String get link => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -34,7 +35,7 @@ abstract class $FacebookLinkCopyWith<$Res> {
           FacebookLink value, $Res Function(FacebookLink) then) =
       _$FacebookLinkCopyWithImpl<$Res, FacebookLink>;
   @useResult
-  $Res call({String link});
+  $Res call({int id, String link});
 }
 
 /// @nodoc
@@ -50,9 +51,14 @@ class _$FacebookLinkCopyWithImpl<$Res, $Val extends FacebookLink>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? link = null,
   }) {
     return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
       link: null == link
           ? _value.link
           : link // ignore: cast_nullable_to_non_nullable
@@ -69,7 +75,7 @@ abstract class _$$_FacebookLinkCopyWith<$Res>
       __$$_FacebookLinkCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String link});
+  $Res call({int id, String link});
 }
 
 /// @nodoc
@@ -83,9 +89,14 @@ class __$$_FacebookLinkCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? link = null,
   }) {
     return _then(_$_FacebookLink(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
       link: null == link
           ? _value.link
           : link // ignore: cast_nullable_to_non_nullable
@@ -97,17 +108,19 @@ class __$$_FacebookLinkCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$_FacebookLink implements _FacebookLink {
-  _$_FacebookLink({required this.link});
+  _$_FacebookLink({required this.id, required this.link});
 
   factory _$_FacebookLink.fromJson(Map<String, dynamic> json) =>
       _$$_FacebookLinkFromJson(json);
 
   @override
+  final int id;
+  @override
   final String link;
 
   @override
   String toString() {
-    return 'FacebookLink(link: $link)';
+    return 'FacebookLink(id: $id, link: $link)';
   }
 
   @override
@@ -115,12 +128,13 @@ class _$_FacebookLink implements _FacebookLink {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_FacebookLink &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.link, link) || other.link == link));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, link);
+  int get hashCode => Object.hash(runtimeType, id, link);
 
   @JsonKey(ignore: true)
   @override
@@ -137,11 +151,14 @@ class _$_FacebookLink implements _FacebookLink {
 }
 
 abstract class _FacebookLink implements FacebookLink {
-  factory _FacebookLink({required final String link}) = _$_FacebookLink;
+  factory _FacebookLink({required final int id, required final String link}) =
+      _$_FacebookLink;
 
   factory _FacebookLink.fromJson(Map<String, dynamic> json) =
       _$_FacebookLink.fromJson;
 
+  @override
+  int get id;
   @override
   String get link;
   @override

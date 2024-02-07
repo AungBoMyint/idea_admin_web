@@ -90,7 +90,10 @@ class CourseFormWidget extends StatelessWidget {
                       color: Colors.white,
                       padding: const EdgeInsets.all(10),
                       child: video.value.isNotEmpty
-                          ? Text(video.value["name"])
+                          ? Text(
+                              video.value["name"],
+                              maxLines: 5,
+                            )
                           : Image.asset(
                               AppIcon.video,
                               height: 80,

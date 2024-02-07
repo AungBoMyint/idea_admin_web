@@ -6,6 +6,9 @@ import 'package:mmlearning_admin/bloc/bloc/auth_bloc.dart';
 import 'package:mmlearning_admin/bloc/bloc/category_bloc.dart';
 import 'package:mmlearning_admin/bloc/bloc/course_bloc.dart';
 import 'package:mmlearning_admin/bloc/bloc/discount_bloc.dart';
+import 'package:mmlearning_admin/bloc/bloc/enrollment_bloc.dart';
+import 'package:mmlearning_admin/bloc/bloc/rating_bloc.dart';
+import 'package:mmlearning_admin/bloc/bloc/review_bloc.dart';
 import 'package:mmlearning_admin/bloc/bloc/signin_bloc.dart';
 import 'package:mmlearning_admin/bloc/bloc/slider_bloc.dart';
 import 'package:mmlearning_admin/bloc/bloc/student_bloc.dart';
@@ -74,13 +77,23 @@ class _MyAppState extends State<MyApp> {
               CategoryBloc(categoryRepo)..add(CategoryStartGetEvent()),
         ),
         BlocProvider<SliderBloc>(
-          create: (_) => SliderBloc(sliderRepo)..add(SliderStartGetEvent()),
+          create: (_) =>
+              SliderBloc(sliderRepo, comRepo)..add(SliderStartGetEvent()),
         ),
         BlocProvider<DiscountBloc>(
           create: (_) => DiscountBloc(comRepo)..add(GetStartDiscount()),
         ),
         BlocProvider<StudentBloc>(
           create: (_) => StudentBloc(comRepo)..add(GetStartStudent()),
+        ),
+        BlocProvider<EnrollmentBloc>(
+          create: (_) => EnrollmentBloc(comRepo)..add(GetStartEnrollment()),
+        ),
+        BlocProvider<RatingBloc>(
+          create: (_) => RatingBloc(comRepo)..add(GetStartRating()),
+        ),
+        BlocProvider<ReviewBloc>(
+          create: (_) => ReviewBloc(comRepo)..add(GetStartReview()),
         ),
       ],
       child: MaterialApp(

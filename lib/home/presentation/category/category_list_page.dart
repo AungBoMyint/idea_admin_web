@@ -152,6 +152,46 @@ class CategoryListPage extends StatelessWidget {
                                 child: SfDataGrid(
                                   source: CategoryDataSource(
                                       courses: state.categories ?? []),
+                                  loadMoreViewBuilder: (BuildContext context,
+                                      LoadMoreRows loadMoreRows) {
+                                    Future<String> loadRows() async {
+                                      // Call the loadMoreRows function to call the
+                                      // DataGridSource.handleLoadMoreRows method. So, additional
+                                      // rows can be added from handleLoadMoreRows method.
+                                      await loadMoreRows();
+                                      return Future<String>.value('Completed');
+                                    }
+
+                                    return FutureBuilder<String>(
+                                        initialData: 'loading',
+                                        future: loadRows(),
+                                        builder: (context, snapShot) {
+                                          if (snapShot.data == 'loading') {
+                                            return Container(
+                                                height: 60.0,
+                                                width: double.infinity,
+                                                decoration: const BoxDecoration(
+                                                    color: Colors.white,
+                                                    border: BorderDirectional(
+                                                        top: BorderSide(
+                                                            width: 1.0,
+                                                            color:
+                                                                Color.fromRGBO(
+                                                                    0,
+                                                                    0,
+                                                                    0,
+                                                                    0.26)))),
+                                                alignment: Alignment.center,
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  color: primaryColor,
+                                                ));
+                                          } else {
+                                            return SizedBox.fromSize(
+                                                size: Size.zero);
+                                          }
+                                        });
+                                  },
                                   columns: <GridColumn>[
                                     GridColumn(
                                         columnName: 'actions',

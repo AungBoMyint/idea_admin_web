@@ -12,6 +12,7 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import '../../../app_icon.dart';
 import '../../../core/presentation/responsive_builder.dart';
 import '../../../enum_class.dart';
+import '../../../function.dart';
 import '../widget/drawer_mobile.dart';
 import '../widget/error_widget.dart';
 import '../widget/loading_widget.dart';
@@ -55,7 +56,10 @@ class CourseListPage extends StatelessWidget {
                         status == SizeStatus.desktop
                             ? SizedBox(
                                 width: size.width * 0.3,
-                                child: const TextField(
+                                child: TextFormField(
+                                  onFieldSubmitted: (v) => context
+                                      .read<CourseBloc>()
+                                      .add(SearchCourse(value: v)),
                                   decoration: InputDecoration(
                                     contentPadding: EdgeInsets.only(right: 20),
                                     prefixIcon: Icon(Icons.search),
@@ -68,7 +72,10 @@ class CourseListPage extends StatelessWidget {
                                 ),
                               )
                             : Expanded(
-                                child: TextField(
+                                child: TextFormField(
+                                  onFieldSubmitted: (v) => context
+                                      .read<CourseBloc>()
+                                      .add(SearchCourse(value: v)),
                                   decoration: InputDecoration(
                                     contentPadding: EdgeInsets.only(right: 20),
                                     prefixIcon: Icon(Icons.search),
@@ -101,8 +108,9 @@ class CourseListPage extends StatelessWidget {
                         ),
                         10.h(),
                         status == SizeStatus.desktop
-                            ? InkWell(
-                                onTap: () {},
+                            ? GestureDetector(
+                                onTapDown: (details) => showProfilePopupMenu(
+                                    context, details.globalPosition),
                                 child: CircleAvatar(
                                   backgroundColor: primaryColor,
                                   radius: 20,
@@ -141,6 +149,41 @@ class CourseListPage extends StatelessWidget {
                               child: SfDataGrid(
                                 source: CourseDataSource(
                                     courses: state.courses ?? []),
+                                loadMoreViewBuilder: (BuildContext context,
+                                    LoadMoreRows loadMoreRows) {
+                                  Future<String> loadRows() async {
+                                    // Call the loadMoreRows function to call the
+                                    // DataGridSource.handleLoadMoreRows method. So, additional
+                                    // rows can be added from handleLoadMoreRows method.
+                                    await loadMoreRows();
+                                    return Future<String>.value('Completed');
+                                  }
+
+                                  return FutureBuilder<String>(
+                                      initialData: 'loading',
+                                      future: loadRows(),
+                                      builder: (context, snapShot) {
+                                        if (snapShot.data == 'loading') {
+                                          return Container(
+                                              height: 60.0,
+                                              width: double.infinity,
+                                              decoration: const BoxDecoration(
+                                                  color: Colors.white,
+                                                  border: BorderDirectional(
+                                                      top: BorderSide(
+                                                          width: 1.0,
+                                                          color: Color.fromRGBO(
+                                                              0, 0, 0, 0.26)))),
+                                              alignment: Alignment.center,
+                                              child: CircularProgressIndicator(
+                                                color: primaryColor,
+                                              ));
+                                        } else {
+                                          return SizedBox.fromSize(
+                                              size: Size.zero);
+                                        }
+                                      });
+                                },
                                 columns: <GridColumn>[
                                   GridColumn(
                                       columnName: 'actions',

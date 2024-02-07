@@ -29,9 +29,9 @@ part 'slider_state.dart';
 
 class SliderBloc extends Bloc<SliderEvent, SliderState> {
   final SliderRepositoryApi sliderRepo;
+  final CommonRepositoryApi comRepo;
   /*  final CommonRepositoryApi commonRepo; */
-  SliderBloc(this.sliderRepo /* , this.commonRepo */)
-      : super(const SliderState()) {
+  SliderBloc(this.sliderRepo, this.comRepo) : super(const SliderState()) {
     on<AddSliderEvent>(_onAddSlider);
     on<UpdateSliderEvent>(_onUpdateSlider);
     on<SliderStartGetEvent>(_onStartGet);
@@ -104,15 +104,15 @@ class SliderBloc extends Bloc<SliderEvent, SliderState> {
         messengerLink: (state.formMessenger == null) ||
                 (state.formMessenger?.value.isEmpty == true)
             ? null
-            : MessengerLink(link: state.formMessenger!.value),
+            : MessengerLink(id: 0, link: state.formMessenger!.value),
         facebookLink: (state.formFacebook == null) ||
                 (state.formFacebook?.value.isEmpty == true)
             ? null
-            : FacebookLink(link: state.formFacebook!.value),
+            : FacebookLink(id: 0, link: state.formFacebook!.value),
         youtubeLink: (state.formYoutube == null) ||
                 (state.formYoutube?.value.isEmpty == true)
             ? null
-            : YoutubeLink(link: state.formYoutube!.value),
+            : YoutubeLink(id: 0, link: state.formYoutube!.value),
         courseLink: (state.formCourse == null) ||
                 (state.formCourse?.value.isEmpty == true)
             ? null
@@ -225,57 +225,148 @@ class SliderBloc extends Bloc<SliderEvent, SliderState> {
       emit(state.copyWith(
           formStatus: FormzSubmissionStatus.inProgress,
           sliderStatus: SliderStatus.updating));
-      bool response = await sliderRepo.updateSlider(
-        data: {
-          "title": state.formTitle.value,
-          "image": MultipartFile.fromBytes(state.formImage.value,
-              filename: "${DateTime.now().toIso8601String()}.png")
-        },
-        messengerLink: (state.formMessenger == null) ||
-                (state.formMessenger?.value.isEmpty == true)
-            ? null
-            : MessengerLink(link: state.formMessenger!.value),
-        facebookLink: (state.formFacebook == null) ||
-                (state.formFacebook?.value.isEmpty == true)
-            ? null
-            : FacebookLink(link: state.formFacebook!.value),
-        youtubeLink: (state.formYoutube == null) ||
-                (state.formYoutube?.value.isEmpty == true)
-            ? null
-            : YoutubeLink(link: state.formYoutube!.value),
-        courseLink: (state.formCourse == null) ||
-                (state.formCourse?.value.isEmpty == true)
-            ? null
-            : state.formCourse!.value,
-        sliderID: state.selectedSlider!.id,
-      );
+      var response = await comRepo.updateFormData(data: {
+        "title": state.formTitle.value,
+        "image": MultipartFile.fromBytes(state.formImage.value,
+            filename: "${DateTime.now().toIso8601String()}.png")
+      }, uploading: (v) {}, path: "$sliderPath${state.selectedSlider!.id}/");
 
-      if (!response) {
-        //fail
-        emit(state.copyWith(
-          formStatus: FormzSubmissionStatus.failure,
-          sliderStatus: SliderStatus.updatingFail,
-        ));
-      } else {
+      //messengerLink
+      if (state.selectedSlider?.messengerlink?.link.isNotEmpty == true) {
+        //already contain,so
+        if (state.formMessenger?.value.isEmpty == true) {
+          //need to delete
+          await comRepo.delete(
+              "$messengerLinkPath${state.selectedSlider!.messengerlink!.id}/");
+        } else {
+          //need to update
+          await comRepo.updateData(
+            path:
+                "$messengerLinkPath${state.selectedSlider!.messengerlink!.id}/",
+            data: {
+              "slider": state.selectedSlider!.id,
+              "link": state.formMessenger!.value,
+            },
+          );
+        }
+      } else if (state.formMessenger?.value.isNotEmpty == true) {
+        //new need to add
+        await comRepo.postData(
+          data: {
+            "slider": state.selectedSlider!.id,
+            "link": state.formMessenger?.value,
+          },
+          path: messengerLinkPath,
+        );
+      }
+      //facebookLink
+      if (state.selectedSlider?.facebooklink?.link.isNotEmpty == true) {
+        //already contain,so
+        if (state.formFacebook?.value.isEmpty == true) {
+          //need to delete
+          await comRepo.delete(
+              "$facebookLinkPath${state.selectedSlider!.facebooklink!.id}/");
+        } else {
+          //need to update
+          await comRepo.updateData(
+            path: "$facebookLinkPath${state.selectedSlider!.facebooklink!.id}/",
+            data: {
+              "slider": state.selectedSlider!.id,
+              "link": state.formFacebook!.value,
+            },
+          );
+        }
+      } else if (state.formFacebook?.value.isNotEmpty == true) {
+        //new need to add
+        await comRepo.postData(
+          data: {
+            "slider": state.selectedSlider!.id,
+            "link": state.formFacebook?.value,
+          },
+          path: facebookLinkPath,
+        );
+      }
+      //youtubeLink
+      if (state.selectedSlider?.youtube?.link.isNotEmpty == true) {
+        //already contain,so
+        if (state.formYoutube?.value.isEmpty == true) {
+          //need to delete
+          await comRepo
+              .delete("$youtubeLinkPath${state.selectedSlider!.youtube!.id}/");
+        } else {
+          //need to update
+          await comRepo.updateData(
+            path: "$youtubeLinkPath${state.selectedSlider!.youtube!.id}/",
+            data: {
+              "slider": state.selectedSlider!.id,
+              "link": state.formYoutube!.value,
+            },
+          );
+        }
+      } else if (state.formYoutube?.value.isNotEmpty == true) {
+        //new need to add
+        await comRepo.postData(
+          data: {
+            "slider": state.selectedSlider!.id,
+            "link": state.formYoutube?.value,
+          },
+          path: youtubeLinkPath,
+        );
+      }
+      //courseLink
+      if (!(state.selectedSlider!.courselink == null)) {
+        //already contain so,
+        if (state.formCourse?.value.isEmpty == true) {
+          //need to delete
+          await comRepo.delete(
+              "$courseLinkPath${state.selectedSlider!.courselink!.id}/");
+        } else {
+          //need to update
+          await comRepo.updateData(
+            data: {
+              "slider": state.selectedSlider!.id,
+              "course": state.formCourse!.value,
+            },
+            path: "$courseLinkPath${state.selectedSlider!.courselink!.id}/",
+          );
+        }
+      } else if (state.formCourse?.value.isNotEmpty == true) {
+        //need to post
+        await comRepo.postData(
+          data: {
+            "slider": state.selectedSlider!.id,
+            "course": state.formCourse!.value,
+          },
+          path: courseLinkPath,
+        );
+      }
+      //
+      /* if (!response) { */
+      //fail
+      emit(state.copyWith(
+        formStatus: FormzSubmissionStatus.success,
+        sliderStatus: SliderStatus.updatingSuccess,
+      ));
+      /* } */ /* else {
         emit(state.copyWith(
           formStatus: FormzSubmissionStatus.success,
           sliderStatus: SliderStatus.updatingSuccess,
-        ));
-        add(SliderStartGetEvent());
-      }
+        )); */
+      add(SliderStartGetEvent());
+      /* } */
     }
   }
 
   FutureOr<void> _onSearchSlider(
       SearchSliderEvent event, Emitter<SliderState> emit) async {
-    /*  if (state.sliderStatus != SliderStatus.searching) {
+    if (state.sliderStatus != SliderStatus.searching) {
       //search
       final response =
-          await sliderRepo.searchSlider(path: SliderPath, data: event.data);
+          await sliderRepo.searchSlider(path: sliderPath, data: event.data);
       if (response.error == null) {
         //success
         emit(state.copyWith(
-         sliderStatus: SliderStatus.searchingSuccess,
+          sliderStatus: SliderStatus.searchingSuccess,
           hasMore: response.next == null ? false : true,
           next: response.next,
           sliders: response.results,
@@ -287,7 +378,7 @@ class SliderBloc extends Bloc<SliderEvent, SliderState> {
           error: response.error?.detail,
         ));
       }
-    } */
+    }
   }
 
   FutureOr<void> _onMessengerChange(

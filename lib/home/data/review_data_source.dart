@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mmlearning_admin/bloc/bloc/review_bloc.dart';
 import 'package:mmlearning_admin/constant.dart';
 import 'package:mmlearning_admin/main.dart';
 import 'package:mmlearning_admin/model/category.dart';
@@ -7,18 +9,16 @@ import 'package:mmlearning_admin/model/rating.dart';
 import 'package:mmlearning_admin/model/review.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
+import '../../bloc/core_bloc.dart';
+
 class ReviewDataSource extends DataGridSource {
   ReviewDataSource({required List<Review> courses}) {
     _courses = courses
         .map<DataGridRow>((e) => DataGridRow(cells: [
-              DataGridCell<String>(columnName: 'actions', value: ""),
+              DataGridCell<Review>(columnName: 'actions', value: e),
               DataGridCell<String>(columnName: 'review', value: e.review),
-              DataGridCell<String>(
-                  columnName: 'course', value: e.course?.title),
-              DataGridCell<String>(
-                  columnName: 'student',
-                  value:
-                      "${e.student?.user.firstName} ${e.student?.user.lastName}"),
+              DataGridCell<String>(columnName: 'course', value: e.course),
+              DataGridCell<String>(columnName: 'student', value: e.student),
             ]))
         .toList();
   }
@@ -37,13 +37,26 @@ class ReviewDataSource extends DataGridSource {
         return Row(
           children: [
             IconButton(
-                onPressed: () {},
-                icon: Icon(
+                onPressed: () {
+                  materialKey.currentContext!
+                      .read<CoreBloc>()
+                      .add(ChangeDetailPageEvent(
+                        detailPage: DetailPage.reviewAdd,
+                      ));
+                  materialKey.currentContext!
+                      .read<ReviewBloc>()
+                      .add(ChangeSelectedReview(review: dataGridCell.value));
+                },
+                icon: const Icon(
                   Icons.edit_document,
                   color: Colors.orange,
                 )),
             IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  materialKey.currentContext!
+                      .read<ReviewBloc>()
+                      .add(DeleteReview(id: dataGridCell.value.id));
+                },
                 icon: Icon(
                   Icons.delete,
                   color: Colors.red,
@@ -53,8 +66,9 @@ class ReviewDataSource extends DataGridSource {
       }
 
       return Container(
+        height: 100,
         alignment: Alignment.center,
-        padding: const EdgeInsets.all(16.0),
+        /* padding: const EdgeInsets., */
         child: Text(
           dataGridCell.value.toString(),
           textAlign: TextAlign.center,
@@ -64,5 +78,16 @@ class ReviewDataSource extends DataGridSource {
         ),
       );
     }).toList());
+  }
+
+  @override
+  Future<void> handleLoadMoreRows() async {
+    final ratingBloc = materialKey.currentContext!.read<ReviewBloc>();
+    if (ratingBloc.state.hasMore) {
+      await Future.delayed(const Duration(seconds: 5));
+      // ignore: use_build_context_synchronously
+      ratingBloc.add(GetMoreReview());
+      notifyListeners();
+    }
   }
 }

@@ -14,6 +14,7 @@ enum CategoryStatus {
   deletingFail,
   addingFail,
   searchingFail,
+  loading,
   initial
 }
 

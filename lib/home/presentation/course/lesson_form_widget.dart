@@ -76,6 +76,7 @@ class LessonFormWidget extends StatelessWidget {
                             return Text(
                               state.lessonVideo.value["name"],
                               style: textTheme.bodySmall,
+                              maxLines: 5,
                             );
                           }
                           return Image.asset(
@@ -123,6 +124,7 @@ class LessonFormWidget extends StatelessWidget {
                             return Text(
                               state.lessonFile.value["name"],
                               style: textTheme.bodySmall,
+                              maxLines: 5,
                             );
                           }
                           return Image.asset(

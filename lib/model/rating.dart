@@ -11,9 +11,10 @@ part 'rating.g.dart';
 class Rating with _$Rating {
   @JsonSerializable(explicitToJson: true)
   factory Rating({
+    required int id,
     required double rating,
-    Course? course,
-    required Student? student,
+    dynamic course,
+    dynamic student,
   }) = _Rating;
   factory Rating.fromJson(Map<String, dynamic> json) => _$RatingFromJson(json);
 }

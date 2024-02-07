@@ -20,6 +20,7 @@ CourseLink _$CourseLinkFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$CourseLink {
+  int get id => throw _privateConstructorUsedError;
   List<Course>? get course => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -34,7 +35,7 @@ abstract class $CourseLinkCopyWith<$Res> {
           CourseLink value, $Res Function(CourseLink) then) =
       _$CourseLinkCopyWithImpl<$Res, CourseLink>;
   @useResult
-  $Res call({List<Course>? course});
+  $Res call({int id, List<Course>? course});
 }
 
 /// @nodoc
@@ -50,9 +51,14 @@ class _$CourseLinkCopyWithImpl<$Res, $Val extends CourseLink>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? course = freezed,
   }) {
     return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
       course: freezed == course
           ? _value.course
           : course // ignore: cast_nullable_to_non_nullable
@@ -69,7 +75,7 @@ abstract class _$$_CourseLinkCopyWith<$Res>
       __$$_CourseLinkCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({List<Course>? course});
+  $Res call({int id, List<Course>? course});
 }
 
 /// @nodoc
@@ -83,9 +89,14 @@ class __$$_CourseLinkCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? course = freezed,
   }) {
     return _then(_$_CourseLink(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
       course: freezed == course
           ? _value._course
           : course // ignore: cast_nullable_to_non_nullable
@@ -98,11 +109,14 @@ class __$$_CourseLinkCopyWithImpl<$Res>
 
 @JsonSerializable(explicitToJson: true)
 class _$_CourseLink implements _CourseLink {
-  _$_CourseLink({final List<Course>? course}) : _course = course;
+  _$_CourseLink({required this.id, final List<Course>? course})
+      : _course = course;
 
   factory _$_CourseLink.fromJson(Map<String, dynamic> json) =>
       _$$_CourseLinkFromJson(json);
 
+  @override
+  final int id;
   final List<Course>? _course;
   @override
   List<Course>? get course {
@@ -115,7 +129,7 @@ class _$_CourseLink implements _CourseLink {
 
   @override
   String toString() {
-    return 'CourseLink(course: $course)';
+    return 'CourseLink(id: $id, course: $course)';
   }
 
   @override
@@ -123,13 +137,14 @@ class _$_CourseLink implements _CourseLink {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_CourseLink &&
+            (identical(other.id, id) || other.id == id) &&
             const DeepCollectionEquality().equals(other._course, _course));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_course));
+  int get hashCode => Object.hash(
+      runtimeType, id, const DeepCollectionEquality().hash(_course));
 
   @JsonKey(ignore: true)
   @override
@@ -146,11 +161,14 @@ class _$_CourseLink implements _CourseLink {
 }
 
 abstract class _CourseLink implements CourseLink {
-  factory _CourseLink({final List<Course>? course}) = _$_CourseLink;
+  factory _CourseLink({required final int id, final List<Course>? course}) =
+      _$_CourseLink;
 
   factory _CourseLink.fromJson(Map<String, dynamic> json) =
       _$_CourseLink.fromJson;
 
+  @override
+  int get id;
   @override
   List<Course>? get course;
   @override

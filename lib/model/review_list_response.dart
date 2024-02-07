@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:mmlearning_admin/model/response_error.dart';
 
 import 'review.dart';
 
@@ -10,7 +11,9 @@ class ReviewListResponse with _$ReviewListResponse {
   @JsonSerializable(explicitToJson: true)
   factory ReviewListResponse({
     String? next,
-    required List<Review> results,
+    List<Review>? results,
+    int? count,
+    ResponseError? error,
   }) = _ResponseListResponse;
   factory ReviewListResponse.fromJson(Map<String, dynamic> json) =>
       _$ReviewListResponseFromJson(json);

@@ -2,6 +2,11 @@ part of 'discount_bloc.dart';
 
 class DiscountEvent {}
 
+class SearchDiscount extends DiscountEvent {
+  final String value;
+  SearchDiscount({required this.value});
+}
+
 class GetStartDiscount extends DiscountEvent {}
 
 class GetMoreDiscount extends DiscountEvent {}

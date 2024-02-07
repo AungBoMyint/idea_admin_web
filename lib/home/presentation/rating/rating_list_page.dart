@@ -2,16 +2,22 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mmlearning_admin/bloc/bloc/rating_bloc.dart';
 import 'package:mmlearning_admin/bloc/core_bloc.dart';
 import 'package:mmlearning_admin/constant.dart';
 import 'package:mmlearning_admin/extension_widget.dart';
+import 'package:mmlearning_admin/home/data/rating_data_source.dart';
 import 'package:mmlearning_admin/home/presentation/home_page.dart';
 import 'package:mmlearning_admin/mock.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../../app_icon.dart';
 import '../../../core/presentation/responsive_builder.dart';
+import '../../../enum_class.dart';
+import '../../../function.dart';
 import '../widget/drawer_mobile.dart';
+import '../widget/error_widget.dart';
+import '../widget/loading_widget.dart';
 
 class RatingListPage extends StatelessWidget {
   const RatingListPage({
@@ -52,7 +58,10 @@ class RatingListPage extends StatelessWidget {
                         status == SizeStatus.desktop
                             ? SizedBox(
                                 width: size.width * 0.3,
-                                child: const TextField(
+                                child: TextFormField(
+                                  onFieldSubmitted: (v) => context
+                                      .read<RatingBloc>()
+                                      .add(SearchRating(value: v)),
                                   decoration: InputDecoration(
                                     contentPadding: EdgeInsets.only(right: 20),
                                     prefixIcon: Icon(Icons.search),
@@ -65,7 +74,10 @@ class RatingListPage extends StatelessWidget {
                                 ),
                               )
                             : Expanded(
-                                child: TextField(
+                                child: TextFormField(
+                                  onFieldSubmitted: (v) => context
+                                      .read<RatingBloc>()
+                                      .add(SearchRating(value: v)),
                                   decoration: InputDecoration(
                                     contentPadding: EdgeInsets.only(right: 20),
                                     prefixIcon: Icon(Icons.search),
@@ -81,9 +93,13 @@ class RatingListPage extends StatelessWidget {
                             ? Expanded(child: const SizedBox())
                             : 20.h(),
                         ElevatedButton(
-                          onPressed: () => context.read<CoreBloc>().add(
-                              ChangeDetailPageEvent(
-                                  detailPage: DetailPage.ratingAdd)),
+                          onPressed: () {
+                            context
+                                .read<RatingBloc>()
+                                .add(ChangeSelectedRating(rating: null));
+                            context.read<CoreBloc>().add(ChangeDetailPageEvent(
+                                detailPage: DetailPage.ratingAdd));
+                          },
                           child: Icon(
                             Icons.add,
                             color: Colors.white,
@@ -94,8 +110,9 @@ class RatingListPage extends StatelessWidget {
                         ),
                         10.h(),
                         status == SizeStatus.desktop
-                            ? InkWell(
-                                onTap: () {},
+                            ? GestureDetector(
+                                onTapDown: (details) => showProfilePopupMenu(
+                                    context, details.globalPosition),
                                 child: CircleAvatar(
                                   backgroundColor: primaryColor,
                                   radius: 20,
@@ -118,52 +135,100 @@ class RatingListPage extends StatelessWidget {
                 Expanded(
                   child: LayoutBuilder(builder: (context, constraints) {
                     final width = constraints.maxWidth;
-                    return Card(
-                      child: SfDataGrid(
-                        source: ratingDataSource,
-                        columns: <GridColumn>[
-                          GridColumn(
-                              columnName: 'actions',
-                              width: 100,
-                              label: Container(
-                                  padding: EdgeInsets.all(16.0),
-                                  child: Text(
-                                    'ACTIONS',
-                                  ))),
-                          GridColumn(
-                              columnName: 'rating',
-                              width: (width / 4),
-                              label: Container(
-                                  padding: EdgeInsets.all(16.0),
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    'RATING',
-                                  ))),
-                          GridColumn(
-                            columnName: 'course',
-                            width: (width / 4),
-                            label: Container(
-                              alignment: Alignment.center,
-                              padding: EdgeInsets.all(16.0),
-                              child: Text(
-                                'COURSE',
-                              ),
+                    final ratings =
+                        context.select((RatingBloc bloc) => bloc.state.ratings);
+                    final status =
+                        context.select((RatingBloc bloc) => bloc.state.status);
+                    if (status == RequestStatus.fetching) {
+                      return const LoadingWidget();
+                    }
+                    if (status == RequestStatus.error) {
+                      return const CustomErrorWidget(
+                          errorText: "an error occur");
+                    }
+                    return ratings?.isEmpty == true
+                        ? const SizedBox()
+                        : Card(
+                            child: SfDataGrid(
+                              source: RatingDataSource(courses: ratings ?? []),
+                              loadMoreViewBuilder: (BuildContext context,
+                                  LoadMoreRows loadMoreRows) {
+                                Future<String> loadRows() async {
+                                  // Call the loadMoreRows function to call the
+                                  // DataGridSource.handleLoadMoreRows method. So, additional
+                                  // rows can be added from handleLoadMoreRows method.
+                                  await loadMoreRows();
+                                  return Future<String>.value('Completed');
+                                }
+
+                                return FutureBuilder<String>(
+                                    initialData: 'loading',
+                                    future: loadRows(),
+                                    builder: (context, snapShot) {
+                                      if (snapShot.data == 'loading') {
+                                        return Container(
+                                            height: 60.0,
+                                            width: double.infinity,
+                                            decoration: const BoxDecoration(
+                                                color: Colors.white,
+                                                border: BorderDirectional(
+                                                    top: BorderSide(
+                                                        width: 1.0,
+                                                        color: Color.fromRGBO(
+                                                            0, 0, 0, 0.26)))),
+                                            alignment: Alignment.center,
+                                            child: CircularProgressIndicator(
+                                              color: primaryColor,
+                                            ));
+                                      } else {
+                                        return SizedBox.fromSize(
+                                            size: Size.zero);
+                                      }
+                                    });
+                              },
+                              columns: <GridColumn>[
+                                GridColumn(
+                                    columnName: 'actions',
+                                    width: 100,
+                                    label: Container(
+                                        padding: EdgeInsets.all(16.0),
+                                        child: Text(
+                                          'ACTIONS',
+                                        ))),
+                                GridColumn(
+                                    columnName: 'rating',
+                                    width: (width / 4),
+                                    label: Container(
+                                        padding: EdgeInsets.all(16.0),
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          'RATING',
+                                        ))),
+                                GridColumn(
+                                  columnName: 'course',
+                                  width: (width / 3),
+                                  label: Container(
+                                    alignment: Alignment.center,
+                                    padding: EdgeInsets.all(16.0),
+                                    child: Text(
+                                      'COURSE',
+                                    ),
+                                  ),
+                                ),
+                                GridColumn(
+                                  columnName: 'student',
+                                  width: (width / 3),
+                                  label: Container(
+                                    alignment: Alignment.center,
+                                    padding: EdgeInsets.all(16.0),
+                                    child: Text(
+                                      'STUDENT',
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                          GridColumn(
-                            columnName: 'student',
-                            width: (width / 4),
-                            label: Container(
-                              alignment: Alignment.center,
-                              padding: EdgeInsets.all(16.0),
-                              child: Text(
-                                'STUDENT',
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
+                          );
                   }),
                 ),
               ],

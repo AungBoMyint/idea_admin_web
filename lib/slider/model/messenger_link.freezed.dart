@@ -20,6 +20,7 @@ MessengerLink _$MessengerLinkFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$MessengerLink {
+  int get id => throw _privateConstructorUsedError;
   String get link => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -34,7 +35,7 @@ abstract class $MessengerLinkCopyWith<$Res> {
           MessengerLink value, $Res Function(MessengerLink) then) =
       _$MessengerLinkCopyWithImpl<$Res, MessengerLink>;
   @useResult
-  $Res call({String link});
+  $Res call({int id, String link});
 }
 
 /// @nodoc
@@ -50,9 +51,14 @@ class _$MessengerLinkCopyWithImpl<$Res, $Val extends MessengerLink>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? link = null,
   }) {
     return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
       link: null == link
           ? _value.link
           : link // ignore: cast_nullable_to_non_nullable
@@ -69,7 +75,7 @@ abstract class _$$_MessengerLinkCopyWith<$Res>
       __$$_MessengerLinkCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String link});
+  $Res call({int id, String link});
 }
 
 /// @nodoc
@@ -83,9 +89,14 @@ class __$$_MessengerLinkCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? link = null,
   }) {
     return _then(_$_MessengerLink(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
       link: null == link
           ? _value.link
           : link // ignore: cast_nullable_to_non_nullable
@@ -97,17 +108,19 @@ class __$$_MessengerLinkCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$_MessengerLink implements _MessengerLink {
-  _$_MessengerLink({required this.link});
+  _$_MessengerLink({required this.id, required this.link});
 
   factory _$_MessengerLink.fromJson(Map<String, dynamic> json) =>
       _$$_MessengerLinkFromJson(json);
 
   @override
+  final int id;
+  @override
   final String link;
 
   @override
   String toString() {
-    return 'MessengerLink(link: $link)';
+    return 'MessengerLink(id: $id, link: $link)';
   }
 
   @override
@@ -115,12 +128,13 @@ class _$_MessengerLink implements _MessengerLink {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_MessengerLink &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.link, link) || other.link == link));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, link);
+  int get hashCode => Object.hash(runtimeType, id, link);
 
   @JsonKey(ignore: true)
   @override
@@ -137,11 +151,14 @@ class _$_MessengerLink implements _MessengerLink {
 }
 
 abstract class _MessengerLink implements MessengerLink {
-  factory _MessengerLink({required final String link}) = _$_MessengerLink;
+  factory _MessengerLink({required final int id, required final String link}) =
+      _$_MessengerLink;
 
   factory _MessengerLink.fromJson(Map<String, dynamic> json) =
       _$_MessengerLink.fromJson;
 
+  @override
+  int get id;
   @override
   String get link;
   @override

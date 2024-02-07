@@ -15,6 +15,9 @@ import '../../../model/category_list_response.dart';
 import '../../../model/course.dart';
 import '../../../model/response_error.dart';
 import '../../model/discount_list_response.dart';
+import '../../model/enrollment_list_response.dart';
+import '../../model/rating_list_response.dart';
+import '../../model/review_list_response.dart';
 import '../../model/student_list_response.dart';
 
 class CommonRepositoryApi {
@@ -22,6 +25,75 @@ class CommonRepositoryApi {
   final _dio = Dio();
   //Need to get token from HiveLocalDatabase and put it in
   //the headers
+  Future<ReviewListResponse> getReview(String path) async {
+    Completer<ReviewListResponse> completer = Completer();
+    try {
+      final response = await _dio.get(
+        path,
+      );
+      if (response.statusCode == 200) {
+        completer.complete(ReviewListResponse.fromJson(response.data));
+      } else {
+        completer.complete(
+            ReviewListResponse(error: ResponseError.fromJson(response.data)));
+      }
+    } catch (e) {
+      log("Error: $e");
+      completer.complete(
+        ReviewListResponse(
+          error: ResponseError(detail: "$e"),
+        ),
+      );
+    }
+    return completer.future;
+  }
+
+  Future<RatingListResponse> getRating(String path) async {
+    Completer<RatingListResponse> completer = Completer();
+    try {
+      final response = await _dio.get(
+        path,
+      );
+      if (response.statusCode == 200) {
+        completer.complete(RatingListResponse.fromJson(response.data));
+      } else {
+        completer.complete(
+            RatingListResponse(error: ResponseError.fromJson(response.data)));
+      }
+    } catch (e) {
+      log("Error: $e");
+      completer.complete(
+        RatingListResponse(
+          error: ResponseError(detail: "$e"),
+        ),
+      );
+    }
+    return completer.future;
+  }
+
+  Future<EnrollmentListResponse> getEnrollment(String path) async {
+    Completer<EnrollmentListResponse> completer = Completer();
+    try {
+      final response = await _dio.get(
+        path,
+      );
+      if (response.statusCode == 200) {
+        completer.complete(EnrollmentListResponse.fromJson(response.data));
+      } else {
+        completer.complete(EnrollmentListResponse(
+            error: ResponseError.fromJson(response.data)));
+      }
+    } catch (e) {
+      log("Error: $e");
+      completer.complete(
+        EnrollmentListResponse(
+          error: ResponseError(detail: "$e"),
+        ),
+      );
+    }
+    return completer.future;
+  }
+
   Future<StudentListResponse> getStudent(String path) async {
     Completer<StudentListResponse> completer = Completer();
     try {
@@ -86,6 +158,63 @@ class CommonRepositoryApi {
         //onSendProgress: (count, total) => uploading(count / total),
       );
       if (response.statusCode == 201) {
+        completer.complete(response.data);
+      } else if (response.statusCode == 200) {
+        completer.complete({"status": response.data});
+      } else {
+        completer.complete(null);
+      }
+    } catch (e) {
+      completer.complete(null);
+    }
+    return completer.future;
+  }
+
+  Future<Map<String, dynamic>?> get({
+    required String path,
+    //required void Function(double v) uploading,
+  }) async {
+    Completer<Map<String, dynamic>?> completer = Completer();
+    final key = box.get(jwtKey, defaultValue: "") as String;
+
+    try {
+      final response = await _dio.get(
+        path,
+        options: Options(headers: {
+          "Authorization": "JWT $key",
+        }),
+        //onSendProgress: (count, total) => uploading(count / total),
+      );
+      if (response.statusCode == 200) {
+        completer.complete(response.data);
+      } else {
+        completer.complete(null);
+      }
+    } catch (e) {
+      completer.complete(null);
+    }
+    return completer.future;
+  }
+
+  Future<Map<String, dynamic>?> search({
+    required String path,
+    required String data,
+  }) async {
+    Completer<Map<String, dynamic>?> completer = Completer();
+    final key = box.get(jwtKey, defaultValue: "") as String;
+
+    try {
+      final response = await _dio.get(
+        path,
+        queryParameters: {
+          "search": data,
+        },
+        options: Options(headers: {
+          "Authorization": "JWT $key",
+        }),
+        //onSendProgress: (count, total) => uploading(count / total),
+      );
+      if (response.statusCode == 200) {
         completer.complete(response.data);
       } else {
         completer.complete(null);

@@ -61,116 +61,121 @@ class CategoryAddPage extends StatelessWidget {
           );
         }),
       ),
-      body: Card(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            20.v(),
-            //appbar
-            Row(
-              children: [
-                InkWell(
-                  onTap: () {
-                    context.read<CoreBloc>().add(
-                        ChangeDetailPageEvent(detailPage: DetailPage.empty));
-                    context
-                        .read<CategoryBloc>()
-                        .add(SetSelectedCategory(category: null));
-                  },
-                  child: Image.asset(
-                    AppIcon.backArrow,
-                    width: 30,
-                    height: 30,
-                  ),
-                ),
-                10.h(),
-                BlocBuilder<CategoryBloc, CategoryState>(
-                    builder: (context, state) {
-                  return Text(
-                    state.selectedCategory == null
-                        ? "Add Category"
-                        : "Update Category",
-                    style: textTheme.displayLarge,
-                  );
-                }),
-              ],
-            ),
-            20.v(),
-            //Image
-            Builder(
-              builder: (context) {
-                final formImage =
-                    context.select((CategoryBloc bloc) => bloc.state.formImage);
-                return Container(
-                  width: 180,
-                  color: Colors.white,
-                  padding: const EdgeInsets.all(10),
-                  child: formImage.value.isNotEmpty
-                      ? Image.memory(
-                          Uint8List.fromList(formImage.value),
-                          height: 80,
-                          width: 80,
-                        )
-                      : Image.asset(
-                          AppIcon.gallery,
-                          height: 80,
-                          width: 80,
+      body: Builder(builder: (context) {
+        final status = context.select((CategoryBloc bloc) => bloc.state.status);
+        return status == CategoryStatus.loading
+            ? const LoadingWidget()
+            : Card(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    20.v(),
+                    //appbar
+                    Row(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            context.read<CoreBloc>().add(ChangeDetailPageEvent(
+                                detailPage: DetailPage.empty));
+                            context
+                                .read<CategoryBloc>()
+                                .add(SetSelectedCategory(category: null));
+                          },
+                          child: Image.asset(
+                            AppIcon.backArrow,
+                            width: 30,
+                            height: 30,
+                          ),
                         ),
-                );
-              },
-            ).withPadding(h: 40, v: 0),
-            10.v(),
-            Padding(
-              padding: const EdgeInsets.only(left: 40),
-              child: ElevatedButton(
-                onPressed: () {
-                  pickImage().then((value) => context
-                      .read<CategoryBloc>()
-                      .add(ImageChangeEvent(image: value)));
-                },
-                child: Text(
-                  "Choose Image",
-                  style: theme.textTheme.displayMedium?.copyWith(
-                    color: Colors.white,
-                  ),
-                ),
-              ).withDefault(
-                radius: 10,
-                height: 35,
-                width: 180,
-              ),
-            ),
-            20.v(),
-            //Title
-            SizedBox(
-              width: size.width * 0.4,
-              child: BlocBuilder<CategoryBloc, CategoryState>(
-                  builder: (context, state) {
-                return TextFormField(
-                  key: UniqueKey(),
-                  autofocus: true,
-                  initialValue: state.formTitle.value,
-                  onChanged: (v) => context
-                      .read<CategoryBloc>()
-                      .add(TitleChangeEvent(title: v)),
-                  decoration: InputDecoration(
-                    border: border,
-                    focusedBorder: border,
-                    enabledBorder: border,
-                    disabledBorder: border,
-                    labelText: "Title",
-                    floatingLabelStyle: textTheme.displayLarge,
-                    errorText: state.formTitle.displayError == null
-                        ? null
-                        : "Title is required.",
-                  ),
-                );
-              }),
-            ).withPadding(h: 40, v: 0),
-            //Button
-          ],
-        ).withPadding(h: 10, v: 10),
-      ),
+                        10.h(),
+                        BlocBuilder<CategoryBloc, CategoryState>(
+                            builder: (context, state) {
+                          return Text(
+                            state.selectedCategory == null
+                                ? "Add Category"
+                                : "Update Category",
+                            style: textTheme.displayLarge,
+                          );
+                        }),
+                      ],
+                    ),
+                    20.v(),
+                    //Image
+                    Builder(
+                      builder: (context) {
+                        final formImage = context.select(
+                            (CategoryBloc bloc) => bloc.state.formImage);
+                        return Container(
+                          width: 180,
+                          color: Colors.white,
+                          padding: const EdgeInsets.all(10),
+                          child: formImage.value.isNotEmpty
+                              ? Image.memory(
+                                  Uint8List.fromList(formImage.value),
+                                  height: 80,
+                                  width: 80,
+                                )
+                              : Image.asset(
+                                  AppIcon.gallery,
+                                  height: 80,
+                                  width: 80,
+                                ),
+                        );
+                      },
+                    ).withPadding(h: 40, v: 0),
+                    10.v(),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 40),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          pickImage().then((value) => context
+                              .read<CategoryBloc>()
+                              .add(ImageChangeEvent(image: value)));
+                        },
+                        child: Text(
+                          "Choose Image",
+                          style: theme.textTheme.displayMedium?.copyWith(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ).withDefault(
+                        radius: 10,
+                        height: 35,
+                        width: 180,
+                      ),
+                    ),
+                    20.v(),
+                    //Title
+                    SizedBox(
+                      width: size.width * 0.4,
+                      child: BlocBuilder<CategoryBloc, CategoryState>(
+                          builder: (context, state) {
+                        return TextFormField(
+                          key: UniqueKey(),
+                          autofocus: true,
+                          initialValue: state.formTitle.value,
+                          onChanged: (v) => context
+                              .read<CategoryBloc>()
+                              .add(TitleChangeEvent(title: v)),
+                          decoration: InputDecoration(
+                            border: border,
+                            focusedBorder: border,
+                            enabledBorder: border,
+                            disabledBorder: border,
+                            labelText: "Title",
+                            floatingLabelStyle: textTheme.displayLarge,
+                            errorText: state.formTitle.displayError == null
+                                ? null
+                                : "Title is required.",
+                          ),
+                        );
+                      }),
+                    ).withPadding(h: 40, v: 0),
+                    //Button
+                  ],
+                ).withPadding(h: 10, v: 10),
+              );
+      }),
     ).withPaddingOnly(right: 20);
   }
 }

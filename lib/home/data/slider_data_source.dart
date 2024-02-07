@@ -88,4 +88,15 @@ class SliderDataSource extends DataGridSource {
       );
     }).toList());
   }
+
+  @override
+  Future<void> handleLoadMoreRows() async {
+    final ratingBloc = materialKey.currentContext!.read<SliderBloc>();
+    if (ratingBloc.state.hasMore) {
+      await Future.delayed(const Duration(seconds: 5));
+      // ignore: use_build_context_synchronously
+      ratingBloc.add(SliderGetMoreEvent());
+      notifyListeners();
+    }
+  }
 }

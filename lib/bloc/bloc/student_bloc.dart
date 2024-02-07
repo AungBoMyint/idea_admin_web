@@ -9,6 +9,7 @@ import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:mmlearning_admin/api_path.dart';
 import 'package:mmlearning_admin/core/data/common_repository.dart';
+import 'package:mmlearning_admin/model/student_list_response.dart';
 
 import '../../enum_class.dart';
 import '../../form/form_string_required.dart';
@@ -21,6 +22,7 @@ part 'student_state.dart';
 class StudentBloc extends Bloc<StudentEvent, StudentState> {
   CommonRepositoryApi comRepo;
   StudentBloc(this.comRepo) : super(const StudentState()) {
+    on<SearchStudent>(_onSearchStudent);
     on<AddStudent>(_onAddStudent);
     on<GetStartStudent>(_onGetStartStudent);
     on<GetMoreStudent>(_onGetMoreStudent);
@@ -225,5 +227,30 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
           state.formFirstName,
           lastName,
         ])));
+  }
+
+  FutureOr<void> _onSearchStudent(
+      SearchStudent event, Emitter<StudentState> emit) async {
+    if (state.studentStatus != StudentStatus.searching) {
+      //search
+      final response =
+          await comRepo.search(path: adminStudentPath, data: event.value);
+      if (!(response == null)) {
+        final studentResponse = StudentListResponse.fromJson(response);
+        //success
+        emit(state.copyWith(
+          studentStatus: StudentStatus.searchingSuccess,
+          hasMore: studentResponse.next == null ? false : true,
+          next: studentResponse.next,
+          students: studentResponse.results,
+        ));
+      } else {
+        //fail
+        emit(state.copyWith(
+          studentStatus: StudentStatus.searchingFail,
+          error: "search discount error!",
+        ));
+      }
+    }
   }
 }

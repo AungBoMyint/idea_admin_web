@@ -2,6 +2,11 @@ part of 'student_bloc.dart';
 
 class StudentEvent {}
 
+class SearchStudent extends StudentEvent {
+  final String value;
+  SearchStudent({required this.value});
+}
+
 class GetStartStudent extends StudentEvent {}
 
 class GetMoreStudent extends StudentEvent {}

@@ -23,6 +23,30 @@ class SliderRepositoryApi {
   //Need to get token from HiveLocalDatabase and put it in
   //the headers
 
+  Future<SliderListResponse> searchSlider(
+      {required String path, required String data}) async {
+    Completer<SliderListResponse> completer = Completer();
+    try {
+      final response = await _dio.get(path, queryParameters: {
+        "search": data,
+      });
+      if (response.statusCode == 200) {
+        completer.complete(SliderListResponse.fromJson(response.data));
+      } else {
+        completer.complete(
+            SliderListResponse(error: ResponseError.fromJson(response.data)));
+      }
+    } catch (e) {
+      log("Error: $e");
+      completer.complete(
+        SliderListResponse(
+          error: ResponseError(detail: "$e"),
+        ),
+      );
+    }
+    return completer.future;
+  }
+
   Future<bool> postSlider({
     required Map<String, dynamic> data,
     MessengerLink? messengerLink,
@@ -101,12 +125,13 @@ class SliderRepositoryApi {
     FacebookLink? facebookLink,
     YoutubeLink? youtubeLink,
     List<int>? courseLink,
+    required List<int> previousCourseLink,
     Blog? blog,
-    int? messengerID,
+    /*  int? messengerID,
     int? facebookID,
     int? youtubeID,
     int? courseID,
-    int? blogID,
+    int? blogID, */
     int? sliderID,
   }) async {
     Completer<bool> completer = Completer();
@@ -118,8 +143,8 @@ class SliderRepositoryApi {
           options: Options(headers: {
             "Authorization": "JWT $key",
           }));
-      if (!(messengerLink == null) && !(messengerID == null)) {
-        await _dio.patch("$messengerLinkPath$messengerID/",
+      if (!(messengerLink == null)) {
+        await _dio.patch("$messengerLinkPath${messengerLink.id}/",
             data: {
               "link": messengerLink.link,
               "slider": response.data["id"],
@@ -128,8 +153,8 @@ class SliderRepositoryApi {
               "Authorization": "JWT $key",
             }));
       }
-      if (!(facebookLink == null) && !(facebookID == null)) {
-        await _dio.patch("$facebookLinkPath$facebookID/",
+      if (!(facebookLink == null)) {
+        await _dio.patch("$facebookLinkPath${facebookLink.id}/",
             data: {
               "slider": response.data["id"],
               "link": facebookLink.link,
@@ -138,8 +163,8 @@ class SliderRepositoryApi {
               "Authorization": "JWT $key",
             }));
       }
-      if (!(youtubeLink == null) && !(youtubeID == null)) {
-        await _dio.patch("$youtubeLinkPath$youtubeID/",
+      if (!(youtubeLink == null)) {
+        await _dio.patch("$youtubeLinkPath${youtubeLink.id}/",
             data: {
               "slider": response.data["id"],
               "link": youtubeLink.link,
@@ -148,23 +173,36 @@ class SliderRepositoryApi {
               "Authorization": "JWT $key",
             }));
       }
-      if (!(courseLink == null) && !(courseID == null)) {
-        await _dio.patch("$courseLinkPath$courseID/",
-            data: {
-              "slider": response.data["id"],
-              "course": courseLink,
-            },
-            options: Options(headers: {
-              "Authorization": "JWT $key",
-            }));
+      if (!(courseLink == null)) {
+        for (var courseId in previousCourseLink) {
+          if (!courseLink.contains(courseId)) {
+            //remove course
+            await _dio.delete(
+              "$courseLinkPath$courseId/",
+            );
+          }
+        }
+        for (var id in courseLink) {
+          if (!previousCourseLink.contains(id)) {
+            //new discount item,so post
+            await _dio.post(courseLinkPath,
+                data: {
+                  "slider": response.data["id"],
+                  "course": courseLink,
+                },
+                options: Options(headers: {
+                  "Authorization": "JWT $key",
+                }));
+          }
+        }
       }
-      if (!(blog == null) && !(blogID == null)) {
+      /*  if (!(blog == null) && !(blogID == null)) {
         await _dio.patch("$blogLinkPath$blogID/",
             data: blog.toJson(),
             options: Options(headers: {
               "Authorization": "JWT $key",
             }));
-      }
+      } */
       completer.complete(true);
     } catch (e) {
       completer.complete(false);

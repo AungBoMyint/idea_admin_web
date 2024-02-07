@@ -18,7 +18,7 @@ class SigninPage extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final size = MediaQuery.of(context).size;
     return BlocConsumer<SigninBloc, SigninState>(
-      listenWhen: (previous, current) => previous != current,
+      listenWhen: (previous, current) => previous.status != current.status,
       listener: (context, state) {
         if (state.status == FormzSubmissionStatus.success) {
           //success

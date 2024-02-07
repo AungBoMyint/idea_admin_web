@@ -4,11 +4,14 @@ import 'package:mmlearning_admin/bloc/bloc/auth_bloc.dart';
 import 'package:mmlearning_admin/bloc/bloc/category_bloc.dart';
 import 'package:mmlearning_admin/bloc/bloc/course_bloc.dart';
 import 'package:mmlearning_admin/bloc/bloc/discount_bloc.dart';
+import 'package:mmlearning_admin/bloc/bloc/enrollment_bloc.dart';
 import 'package:mmlearning_admin/bloc/bloc/slider_bloc.dart';
 import 'package:mmlearning_admin/enum_class.dart';
 import 'package:mmlearning_admin/home/presentation/home_page.dart';
 import 'package:mmlearning_admin/home/presentation/signin/signin_page.dart';
 
+import '../../bloc/bloc/rating_bloc.dart';
+import '../../bloc/bloc/review_bloc.dart';
 import '../../bloc/bloc/student_bloc.dart';
 import '../../function.dart';
 
@@ -239,7 +242,98 @@ class CorePage extends StatelessWidget {
                   break;
                 default:
               }
-            })
+            }),
+        BlocListener<EnrollmentBloc, EnrollmentState>(
+            listenWhen: (previous, current) =>
+                previous.enrollmentStatus != current.enrollmentStatus,
+            listener: (context, state) {
+              switch (state.enrollmentStatus) {
+                //Student
+                //lesson
+                case EnrollmentStatus.adding:
+                  showSuccessSnack(
+                      context: context, data: "Enrollment is successful!");
+                  break;
+                case EnrollmentStatus.addingFail:
+                  showErrorSnack(
+                      context: context, data: "Enrollment is failed!");
+                  break;
+
+                default:
+              }
+            }),
+        //Rating
+        BlocListener<RatingBloc, RatingState>(
+            listenWhen: (previous, current) =>
+                previous.ratingStatus != current.ratingStatus,
+            listener: (context, state) {
+              switch (state.ratingStatus) {
+                //Rating
+                //lesson
+                case RatingStatus.addingSuccess:
+                  showSuccessSnack(
+                      context: context,
+                      data: "Rating Uploading is successful!");
+                  break;
+                case RatingStatus.addingFail:
+                  showErrorSnack(
+                      context: context, data: "Rating Uploading is failed!");
+                  break;
+                case RatingStatus.updatingSuccess:
+                  showSuccessSnack(
+                      context: context, data: "Rating updating is successful!");
+                  break;
+                case RatingStatus.updatingFail:
+                  showErrorSnack(
+                      context: context, data: "Rating updating is failed!");
+                  break;
+                case RatingStatus.deletingSuccess:
+                  showSuccessSnack(
+                      context: context, data: "Rating deleting is successful!");
+                  break;
+                case RatingStatus.deletingFail:
+                  showErrorSnack(
+                      context: context, data: "Rating deleting is failed!");
+                  break;
+                default:
+              }
+            }),
+        //Review
+        BlocListener<ReviewBloc, ReviewState>(
+            listenWhen: (previous, current) =>
+                previous.reviewStatus != current.reviewStatus,
+            listener: (context, state) {
+              switch (state.reviewStatus) {
+                //Review
+                //lesson
+                case ReviewStatus.addingSuccess:
+                  showSuccessSnack(
+                      context: context,
+                      data: "Review Uploading is successful!");
+                  break;
+                case ReviewStatus.addingFail:
+                  showErrorSnack(
+                      context: context, data: "Review Uploading is failed!");
+                  break;
+                case ReviewStatus.updatingSuccess:
+                  showSuccessSnack(
+                      context: context, data: "Review updating is successful!");
+                  break;
+                case ReviewStatus.updatingFail:
+                  showErrorSnack(
+                      context: context, data: "Review updating is failed!");
+                  break;
+                case ReviewStatus.deletingSuccess:
+                  showSuccessSnack(
+                      context: context, data: "Review deleting is successful!");
+                  break;
+                case ReviewStatus.deletingFail:
+                  showErrorSnack(
+                      context: context, data: "Review deleting is failed!");
+                  break;
+                default:
+              }
+            }),
       ],
       child: BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
         if (state.authStatus == AuthStatus.authenticated) {

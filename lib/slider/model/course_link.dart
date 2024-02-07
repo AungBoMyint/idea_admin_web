@@ -9,6 +9,7 @@ part 'course_link.g.dart';
 class CourseLink with _$CourseLink {
   @JsonSerializable(explicitToJson: true)
   factory CourseLink({
+    required int id,
     List<Course>? course,
   }) = _CourseLink;
   factory CourseLink.fromJson(Map<String, dynamic> json) =>

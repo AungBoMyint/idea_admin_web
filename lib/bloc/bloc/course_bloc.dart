@@ -29,6 +29,7 @@ part 'course_state.dart';
 class CourseBloc extends Bloc<CourseEvent, CourseState> {
   final CourseRepositoryApi courseRepo;
   CourseBloc(this.courseRepo) : super(const CourseState()) {
+    on<SearchCourse>(_onSearchCourse);
     on<ChangeSelectedSection>(_onChangeSelectedSection);
     on<ChangeSectionAdd>(_onChangeSectionAdd);
     on<ChangeLessonAdd>(_onChangeLessonAdd);
@@ -769,7 +770,7 @@ class CourseBloc extends Bloc<CourseEvent, CourseState> {
 
   FutureOr<void> _onUpdateCourse(
       UpdateCourseEvent event, Emitter<CourseState> emit) async {
-    if (state.courseStatus != CourseStatus.adding && state.isValid) {
+    if (state.courseStatus != CourseStatus.updating && state.isValid) {
       emit(state.copyWith(courseStatus: CourseStatus.updating));
       final data = getUpdateCourseData(state);
       final response = (data.containsKey("image") || data.containsKey("video"))
@@ -851,6 +852,30 @@ class CourseBloc extends Bloc<CourseEvent, CourseState> {
         "featured": state.featured.value,
         "category": state.category.value,
       };
+    }
+  }
+
+  FutureOr<void> _onSearchCourse(
+      SearchCourse event, Emitter<CourseState> emit) async {
+    if (state.courseStatus != CourseStatus.searching) {
+      //search
+      final response =
+          await courseRepo.searchCourse(path: coursePath, data: event.value);
+      if (response.error == null) {
+        //success
+        emit(state.copyWith(
+          courseStatus: CourseStatus.searchingSuccess,
+          hasMore: response.next == null ? false : true,
+          next: response.next,
+          courses: response.results,
+        ));
+      } else {
+        //fail
+        emit(state.copyWith(
+          courseStatus: CourseStatus.searchingFail,
+          error: response.error?.detail,
+        ));
+      }
     }
   }
 }
