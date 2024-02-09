@@ -1,29 +1,29 @@
-const String categoryPath = "http://143.198.210.207/learning/categories/";
-const String sliderPath = "http://143.198.210.207/learning/sliders/";
-const String coursePath = "http://143.198.210.207/learning/courses/";
-const String discountPath = "http://143.198.210.207/learning/discounts/";
+const String categoryPath = "https://kznidea.online/learning/categories/";
+const String sliderPath = "https://kznidea.online/learning/sliders/";
+const String coursePath = "https://kznidea.online/learning/courses/";
+const String discountPath = "https://kznidea.online/learning/discounts/";
 const String discountItemPath =
-    "http://143.198.210.207/learning/discount_items/";
-const String youtubeLinkPath = "http://143.198.210.207/learning/youtube_links/";
+    "https://kznidea.online/learning/discount_items/";
+const String youtubeLinkPath = "https://kznidea.online/learning/youtube_links/";
 const String facebookLinkPath =
-    "http://143.198.210.207/learning/facebook_links/";
+    "https://kznidea.online/learning/facebook_links/";
 const String messengerLinkPath =
-    "http://143.198.210.207/learning/messenger_links/";
-const String courseLinkPath = "http://143.198.210.207/learning/courselinks/";
-const String blogLinkPath = "http://143.198.210.207/learning/blog_links/";
+    "https://kznidea.online/learning/messenger_links/";
+const String courseLinkPath = "https://kznidea.online/learning/courselinks/";
+const String blogLinkPath = "https://kznidea.online/learning/blog_links/";
 const String adminStudentPath =
-    "http://143.198.210.207/learning/admin_students/";
-const String sectionPath = "http://143.198.210.207/learning/sections/";
-const String subsectionPath = "http://143.198.210.207/learning/subsections/";
-const String videoPath = "http://143.198.210.207/learning/videos/";
-const String blogPath = "http://143.198.210.207/learning/blogs/";
-const String filePath = "http://143.198.210.207/learning/pdfs/";
+    "https://kznidea.online/learning/admin_students/";
+const String sectionPath = "https://kznidea.online/learning/sections/";
+const String subsectionPath = "https://kznidea.online/learning/subsections/";
+const String videoPath = "https://kznidea.online/learning/videos/";
+const String blogPath = "https://kznidea.online/learning/blogs/";
+const String filePath = "https://kznidea.online/learning/pdfs/";
 const String enrollmentPath =
-    "http://143.198.210.207/learning/admin_enrollments/";
-const String ratingPath = "http://143.198.210.207/learning/admin_ratings/";
-const String reviewPath = "http://143.198.210.207/learning/admin_reviews/";
-const String profilePath = "http://143.198.210.207/learning/students/me/";
-const String signUpPath = "http://143.198.210.207/auth/users/";
-const String signInPath = "http://143.198.210.207/auth/jwt/create/";
-const String studentsPath = "http://143.198.210.207/learning/students/";
-const String updateProfilePath = "http://143.198.210.207/learning/students/me/";
+    "https://kznidea.online/learning/admin_enrollments/";
+const String ratingPath = "https://kznidea.online/learning/admin_ratings/";
+const String reviewPath = "https://kznidea.online/learning/admin_reviews/";
+const String profilePath = "https://kznidea.online/learning/students/me/";
+const String signUpPath = "https://kznidea.online/auth/users/";
+const String signInPath = "https://kznidea.online/auth/jwt/create/";
+const String studentsPath = "https://kznidea.online/learning/students/";
+const String updateProfilePath = "https://kznidea.online/learning/students/me/";
