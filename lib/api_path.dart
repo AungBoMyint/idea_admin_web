@@ -1,48 +1,48 @@
 const String categoryPath =
-    "https://idea-api-gzdcu.ondigitalocean.app/learning/categories/";
+    "https://idea-app-lgtz9.ondigitalocean.app/learning/categories/";
 const String sliderPath =
-    "https://idea-api-gzdcu.ondigitalocean.app/learning/sliders/";
+    "https://idea-app-lgtz9.ondigitalocean.app/learning/sliders/";
 const String coursePath =
-    "https://idea-api-gzdcu.ondigitalocean.app/learning/courses/";
+    "https://idea-app-lgtz9.ondigitalocean.app/learning/courses/";
 const String discountPath =
-    "https://idea-api-gzdcu.ondigitalocean.app/learning/discounts/";
+    "https://idea-app-lgtz9.ondigitalocean.app/learning/discounts/";
 const String discountItemPath =
-    "https://idea-api-gzdcu.ondigitalocean.app/learning/discount_items/";
+    "https://idea-app-lgtz9.ondigitalocean.app/learning/discount_items/";
 const String youtubeLinkPath =
-    "https://idea-api-gzdcu.ondigitalocean.app/learning/youtube_links/";
+    "https://idea-app-lgtz9.ondigitalocean.app/learning/youtube_links/";
 const String facebookLinkPath =
-    "https://idea-api-gzdcu.ondigitalocean.app/learning/facebook_links/";
+    "https://idea-app-lgtz9.ondigitalocean.app/learning/facebook_links/";
 const String messengerLinkPath =
-    "https://idea-api-gzdcu.ondigitalocean.app/learning/messenger_links/";
+    "https://idea-app-lgtz9.ondigitalocean.app/learning/messenger_links/";
 const String courseLinkPath =
-    "https://idea-api-gzdcu.ondigitalocean.app/learning/courselinks/";
+    "https://idea-app-lgtz9.ondigitalocean.app/learning/courselinks/";
 const String blogLinkPath =
-    "https://idea-api-gzdcu.ondigitalocean.app/learning/blog_links/";
+    "https://idea-app-lgtz9.ondigitalocean.app/learning/blog_links/";
 const String adminStudentPath =
-    "https://idea-api-gzdcu.ondigitalocean.app/learning/admin_students/";
+    "https://idea-app-lgtz9.ondigitalocean.app/learning/admin_students/";
 const String sectionPath =
-    "https://idea-api-gzdcu.ondigitalocean.app/learning/sections/";
+    "https://idea-app-lgtz9.ondigitalocean.app/learning/sections/";
 const String subsectionPath =
-    "https://idea-api-gzdcu.ondigitalocean.app/learning/subsections/";
+    "https://idea-app-lgtz9.ondigitalocean.app/learning/subsections/";
 const String videoPath =
-    "https://idea-api-gzdcu.ondigitalocean.app/learning/videos/";
+    "https://idea-app-lgtz9.ondigitalocean.app/learning/videos/";
 const String blogPath =
-    "https://idea-api-gzdcu.ondigitalocean.app/learning/blogs/";
+    "https://idea-app-lgtz9.ondigitalocean.app/learning/blogs/";
 const String filePath =
-    "https://idea-api-gzdcu.ondigitalocean.app/learning/pdfs/";
+    "https://idea-app-lgtz9.ondigitalocean.app/learning/pdfs/";
 const String enrollmentPath =
-    "https://idea-api-gzdcu.ondigitalocean.app/learning/admin_enrollments/";
+    "https://idea-app-lgtz9.ondigitalocean.app/learning/admin_enrollments/";
 const String ratingPath =
-    "https://idea-api-gzdcu.ondigitalocean.app/learning/admin_ratings/";
+    "https://idea-app-lgtz9.ondigitalocean.app/learning/admin_ratings/";
 const String reviewPath =
-    "https://idea-api-gzdcu.ondigitalocean.app/learning/admin_reviews/";
+    "https://idea-app-lgtz9.ondigitalocean.app/learning/admin_reviews/";
 const String profilePath =
-    "https://idea-api-gzdcu.ondigitalocean.app/learning/students/me/";
+    "https://idea-app-lgtz9.ondigitalocean.app/learning/students/me/";
 const String signUpPath =
-    "https://idea-api-gzdcu.ondigitalocean.app/auth/users/";
+    "https://idea-app-lgtz9.ondigitalocean.app/auth/users/";
 const String signInPath =
-    "https://idea-api-gzdcu.ondigitalocean.app/auth/jwt/create/";
+    "https://idea-app-lgtz9.ondigitalocean.app/auth/jwt/create/";
 const String studentsPath =
-    "https://idea-api-gzdcu.ondigitalocean.app/learning/students/";
+    "https://idea-app-lgtz9.ondigitalocean.app/learning/students/";
 const String updateProfilePath =
-    "https://idea-api-gzdcu.ondigitalocean.app/learning/students/me/";
+    "https://idea-app-lgtz9.ondigitalocean.app/learning/students/me/";
